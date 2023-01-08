@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "projects"
+version = "0.1.0"
+description = "All my projects in a monorepo"
+authors = ["ericfeunekes <ericwill.f@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+jupyter-book = "^0.13.1"
+pydantic = "^1.10.4"
+pandera = "^0.13.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
