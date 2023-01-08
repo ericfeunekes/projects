@@ -4,6 +4,7 @@ from typing import Dict
 
 type_definitions: Dict[tuple, Callable] = {}
 
+
 def register_type_definition(property_type: str, constructor: str):
     """A function decorator to register a type definition.
 
@@ -17,6 +18,7 @@ def register_type_definition(property_type: str, constructor: str):
     Returns:
         function: The decorator function.
     """
+
     @wraps
     def decorator(func):
         """The decorator function.
