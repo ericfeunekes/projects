@@ -1,3 +1,5 @@
-python_requirements(
+
+
+poetry_requirements(
     name="root",
 )

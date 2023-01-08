@@ -3,4 +3,11 @@
 
 format: jb-book
 root: intro
-chapters:
+parts:
+  - caption: base_schema
+    numbered: False
+    chapters:
+    - file: base_schema/overview.md
+      title: Overview
+    - file: base_schema/how-it-works.md
+      title: How it works
