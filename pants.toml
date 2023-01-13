@@ -9,10 +9,24 @@ backend_packages = [
   "pants.backend.python.lint.docformatter",
   "pants.backend.experimental.python.lint.pyupgrade",
   "pants.backend.python.lint.black",
+  "pants.backend.plugin_development",
+  "jupyter_book"
+]
+
+# path to pants plugins
+pythonpath = ["%(buildroot)s/pants-plugins"]
+
+[source]
+root_patterns = [
+  '/src',
+  '/pants-plugins'
 ]
 
 [python]
 enable_resolves = true
+
+[python-bootstrap]
+search_path = ["<ASDF_LOCAL>", "<PATH>"]
 
 [python.resolves]
 python-default = "default.lock"
