@@ -1,1 +1,1 @@
-from .all_types import all_types
+from .all_types import type_definitions

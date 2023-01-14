@@ -1792,6 +1792,17 @@ files = [
 ]
 
 [[package]]
+name = "pants"
+version = "1.0.1"
+description = "An asynchronous networking library for Python."
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pants-1.0.1.tar.gz", hash = "sha256:a9108a2b514d9b59c361b31d96ad4580c7976a6ada19ae3972a40ed21c38d76d"},
+]
+
+[[package]]
 name = "parso"
 version = "0.8.3"
 description = "A Python Parser"
@@ -3309,4 +3320,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "0fd78806705af8e0baad23700a9b649eb521c458f00bd4c44474c3d98c5f0754"
+content-hash = "d0aa19359c0668d18da1118133918a86b1f910517a4e3f4b44713d7b58d3a93b"

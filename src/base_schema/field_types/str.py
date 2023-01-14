@@ -1,7 +1,9 @@
-from base_schema.register import register_type_definition
+"""The str field type."""
+from base_schema.register import BaseTypeRegister
 
+str_register = BaseTypeRegister(field_type="str")
 
-@register_type_definition("str", "dataclass")
+@str_register("dataclass")
 def create_dataclass_str(name: str) -> tuple:
     """Return value that can be passed to `make_dataclass` to create a
     dataclass type.
