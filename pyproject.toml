@@ -12,6 +12,8 @@ pydantic = "^1.10.4"
 pandera = "^0.13.4"
 pendulum = "^2.1.2"
 mypy = "^0.991"
+pytest = "^7.2.1"
+pytest-mock = "^3.10.0"
 
 
 [build-system]
