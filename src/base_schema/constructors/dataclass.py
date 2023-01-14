@@ -3,7 +3,7 @@ from dataclasses import make_dataclass
 
 def create_dataclass(definition: dict, type_definitions: dict):
     """Create a dataclass type from a definition.
-    
+
     Args:
         definition (dict): The definition.
     
