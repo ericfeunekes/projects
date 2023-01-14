@@ -7,7 +7,7 @@ from ..register import BaseTypeRegister
 
 
 def get_dataclass_field(
-    field: dict, type_definitions: Dict[str, BaseTypeRegister]
+    field: Dict[str, str], type_definitions: Dict[str, BaseTypeRegister]
 ) -> Tuple[str, Any]:
     """Create a dataclass field from a field definition.
 
@@ -28,16 +28,17 @@ def get_dataclass_field(
         raise ValueError(f"Field {name} doesn't have a type") from exc
 
     try:
-        constructor = type_definitions[property_type]["dataclass"]
+        type_register = type_definitions[property_type]
+        constructor = type_register["dataclass"]
     except KeyError as exc:
         raise ValueError(
-            f"Field {name} has type that isn't supported for dataclasses"
+            f"Field {name} has a type that isn't supported for dataclasses"
         ) from exc
 
     return constructor(name)
 
 
-def create_dataclass(definition: dict, type_definitions: dict):
+def create_dataclass(definition: dict, type_definitions: Dict[str, BaseTypeRegister]):
     """Create a dataclass type from a definition.
 
     Args:
@@ -51,7 +52,7 @@ def create_dataclass(definition: dict, type_definitions: dict):
     except KeyError as exc:
         raise ValueError("Dataclass definition must have a name.") from exc
     try:
-        fields = definition["fields"]
+        fields: Dict[str, str] = definition["fields"]
     except KeyError as exc:
         raise ValueError(f"Dataclass {name} doesn't have any fields.") from exc
 
