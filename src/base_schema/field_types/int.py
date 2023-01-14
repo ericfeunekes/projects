@@ -1,7 +1,8 @@
-from base_schema.register import register_type_definition
+from base_schema.register import Register
 
+int_register = Register(field_type="int", fallback=None)
 
-@register_type_definition("int", "dataclass")
+@int_register("dataclass")
 def create_dataclass_int(name: str) -> tuple:
     """Return value that can be passed to `make_dataclass` to create a
     dataclass type.
@@ -13,3 +14,8 @@ def create_dataclass_int(name: str) -> tuple:
         tuple: The value to pass to `make_dataclass`.
     """
     return (name, int)
+
+
+@int_register("pandas")
+def create_pandas_int(name: str):
+    pass
