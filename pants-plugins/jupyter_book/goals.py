@@ -20,6 +20,15 @@ from pants.engine.rules import Get, MultiGet, collect_rules, goal_rule, rule
 from pants.engine.target import Targets
 from pants.option.option_types import ArgsListOption
 
+# Get logger for debugging and log to console
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+logger.addHandler(ch)
+
 
 class JupyterBook(GoalSubsystem):
     name = "jupyter-book"
@@ -108,6 +117,7 @@ async def _push_to_gh_pages(pages: GhPages) -> PushedToGithub:
     )
     # Add the .git directory to a digest
     git_digest = await Get(Digest, PathGlobs([".git/**"]))
+    logger.info(f"Git digest: {git_digest}")
     # Merge the html digest with the git digest and the pex digest
     digest = await Get(
         Digest, MergeDigests([pages.input_digest, git_digest, pex.digest])
@@ -129,20 +139,20 @@ async def _push_to_gh_pages(pages: GhPages) -> PushedToGithub:
 class PublishJB:
     target: JBTarget
     html_digest: Digest
-    workspace: Workspace
 
 
 @dataclass(frozen=True)
 class Published:
-    target: JBTarget
+    digest: Digest
+    write_digest: bool
 
 
 @rule
 async def _publish_jupyter_book(publish: PublishJB) -> Published:
     target_branch = publish.target[DestinationBranchField].value
-
     if target_branch is None:
-        publish.workspace.write_digest(publish.html_digest)
+        logger.info("No target branch specified, skipping publishing to github pages")
+        return Published(digest=publish.html_digest, write_digest=True)
     else:
         await Get(
             PushedToGithub,
@@ -153,7 +163,7 @@ async def _publish_jupyter_book(publish: PublishJB) -> Published:
             ),
         )
 
-    return Published(target=publish.target)
+    return Published(digest=publish.html_digest, write_digest=False)
 
 
 @goal_rule
@@ -170,17 +180,21 @@ async def goal_jupyter_book(
         )
         for target in jb_targets
     )
-    await MultiGet(
+    console.print_stdout("Publishing a jupyter book")
+    results = await MultiGet(
         Get(
             Published,
             PublishJB,
             PublishJB(
-                target=build.target, html_digest=build.file_digest, workspace=workspace
+                target=build.target, html_digest=build.file_digest
             ),
         )
         for build in builds
     )
 
+    for result in results:
+        if result.write_digest:
+            workspace.write_digest(result.digest)
     return JupyterBookGoal(exit_code=0)
 
 
