@@ -6,15 +6,15 @@ authors = ["ericfeunekes <ericwill.f@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.9"
 jupyter-book = "^0.13.1"
-pydantic = "^1.10.4"
-pandera = "^0.13.4"
 pendulum = "^2.1.2"
 mypy = "^0.991"
 pytest = "^7.2.1"
 pytest-mock = "^3.10.0"
-pants = "^1.0.1"
+sphinxcontrib-mermaid = "^0.7.1"
+pandas = "^1.5.2"
+seaborn = "^0.12.2"
 
 
 [build-system]

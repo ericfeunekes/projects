@@ -18,7 +18,7 @@ from pants.engine.goal import Goal, GoalSubsystem
 from pants.engine.process import ProcessResult
 from pants.engine.rules import Get, MultiGet, collect_rules, goal_rule, rule
 from pants.engine.target import Targets
-from pants.option.option_types import ArgsListOption
+from pants.option.option_types import ArgsListOption, StrListOption
 
 # Get logger for debugging and log to console
 import logging
@@ -33,8 +33,17 @@ logger.addHandler(ch)
 class JupyterBook(GoalSubsystem):
     name = "jupyter-book"
     help = "Build jupyter-book documentation"
+    default_version = "jupyter-book>=0.13.0"
 
-    args = ArgsListOption(example="build /docs")
+    extra_requirements = StrListOption(
+        default=[],
+        help="Extra requirements to install when building the jupyter book",
+        )
+
+    args = ArgsListOption(
+        passthrough=True,
+        example="--builder html --toc toc.yml"
+    )
 
 
 class JupyterBookGoal(Goal):
@@ -55,26 +64,28 @@ class BuildJupyterBook:
 
 
 @rule
-async def _build_jupyter_book(rule: JupyterBookDirectory) -> BuildJupyterBook:
+async def _build_jupyter_book(rule: JupyterBookDirectory, jb: JupyterBook) -> BuildJupyterBook:
     folder_digest = await Get(Digest, PathGlobs([f"{rule.path}/**"]))
+    jb_version = jb.default_version
+    extra_requirements = jb.extra_requirements
+    requirements = [jb_version] + list(extra_requirements)
     pex = await Get(
         Pex,
         PexRequest(
             output_filename="jupyter-book.pex",
             internal_only=True,
-            requirements=PexRequirements(
-                ["jupyter-book>=0.13.0", "sphinxcontrib-mermaid>=0.7.1"]
-            ),
+            requirements=PexRequirements(requirements),
             interpreter_constraints=InterpreterConstraints(["CPython>=3.8"]),
             main=ConsoleScript("jupyter-book"),
         ),
     )
     digest = await Get(Digest, MergeDigests([folder_digest, pex.digest]))
+    logger.info(f"args: {jb.args}")
     result = await Get(
         ProcessResult,
         PexProcess(
             pex,
-            argv=["build", rule.path],
+            argv=["build", rule.path, *list(jb.args)],
             description="Building a jupyter book",
             input_digest=digest,
             output_directories=[rule.path],

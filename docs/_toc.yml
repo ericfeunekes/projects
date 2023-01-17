@@ -11,3 +11,5 @@ parts:
       title: Overview
     - file: base_schema/how-it-works.md
       title: How it works
+    - file: base_schema/for_contributions.md
+      title: For contributions
