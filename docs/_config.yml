@@ -32,7 +32,3 @@ parse:
     - linkify
     - substitution
     - dollarmath
-
-sphinx:
-  extra_extensions:
-    - sphinxcontrib.mermaid

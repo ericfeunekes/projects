@@ -23,7 +23,7 @@ root_patterns = [
 ]
 
 [python]
-interpreter_constraints = ["CPython==3.11.*"]
+interpreter_constraints = ["CPython==3.10.*"]
 enable_resolves = true
 
 [python-bootstrap]
@@ -32,9 +32,6 @@ search_path = ["<ASDF_LOCAL>"]
 [python.resolves]
 pants-plugins = "3rdparty/python/pants_lock.txt"
 python-default = "3rdparty/python/default_lock.txt"
-
-[jupyter-book]
-extra_requirements = ["sphinxcontrib-mermaid>=0.7.1", "pyppeteer>=1.0.2"]
 
 
 [anonymous-telemetry]

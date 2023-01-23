@@ -11,6 +11,9 @@ from pants.backend.python.util_rules.pex import (
     PexProcess,
     PexRequest,
     PexRequirements,
+    VenvPexRequest,
+    VenvPex,
+    VenvPexProcess,
 )
 from pants.engine.console import Console
 from pants.engine.fs import Digest, DigestSubset, MergeDigests, PathGlobs, Workspace
@@ -33,7 +36,7 @@ logger.addHandler(ch)
 class JupyterBook(GoalSubsystem):
     name = "jupyter-book"
     help = "Build jupyter-book documentation"
-    default_version = "jupyter-book>=0.13.0"
+    default_version = "jupyter-book==0.13.1"
 
     extra_requirements = StrListOption(
         default=[],
@@ -70,20 +73,22 @@ async def _build_jupyter_book(rule: JupyterBookDirectory, jb: JupyterBook) -> Bu
     extra_requirements = jb.extra_requirements
     requirements = [jb_version] + list(extra_requirements)
     pex = await Get(
-        Pex,
-        PexRequest(
+        VenvPex,
+        VenvPexRequest(
+            PexRequest(
             output_filename="jupyter-book.pex",
             internal_only=True,
             requirements=PexRequirements(requirements),
             interpreter_constraints=InterpreterConstraints(["CPython>=3.8"]),
             main=ConsoleScript("jupyter-book"),
         ),
+        site_packages_copies=True
+        )
     )
     digest = await Get(Digest, MergeDigests([folder_digest, pex.digest]))
-    logger.info(f"args: {jb.args}")
     result = await Get(
         ProcessResult,
-        PexProcess(
+        VenvPexProcess(
             pex,
             argv=["build", rule.path, *list(jb.args)],
             description="Building a jupyter book",

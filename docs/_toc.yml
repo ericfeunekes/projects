@@ -13,3 +13,4 @@ parts:
       title: How it works
     - file: base_schema/for_contributions.md
       title: For contributions
+    - file: test.ipynb
